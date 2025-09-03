@@ -216,6 +216,24 @@ const LeaveManagementPage = () => {
         </TableContainer>
       )}
 
+      {/* 請假說明區塊 */}
+      <Paper sx={{ mt: 3, p: 3, backgroundColor: 'grey.50' }}>
+        <Typography variant="h6" component="h2" gutterBottom sx={{ color: 'text.primary', fontWeight: 600 }}>
+          📋 請假說明
+        </Typography>
+        <Box sx={{ pl: 2 }}>
+          <Typography variant="body2" component="p" sx={{ mb: 1, color: 'text.secondary' }}>
+            1. 請填入實際請假日期與時間。
+          </Typography>
+          <Typography variant="body2" component="p" sx={{ mb: 1, color: 'text.secondary' }}>
+            2. 延診請假：請填寫延診日期，時間請填寫 17:00-18:00。
+          </Typography>
+          <Typography variant="body2" component="p" sx={{ color: 'text.secondary' }}>
+            3. 處方評估研討會：請填寫研討會日期，時間請填寫 17:30-18:00。
+          </Typography>
+        </Box>
+      </Paper>
+
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl) && menuTargetId === selectedLeave?.id}
