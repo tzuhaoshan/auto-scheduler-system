@@ -15,10 +15,13 @@ import {
   Avatar,
   Divider,
   Chip,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import {
   Logout as LogoutIcon,
   Settings as SettingsIcon,
+  Menu as MenuIcon,
 } from '@mui/icons-material';
 import PeopleIcon from '@mui/icons-material/People';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
@@ -54,8 +57,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { userProfile, logout, hasPermission } = useAuth();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   // 根據使用者權限過濾導航項目，避免重複項目
   const filteredNavItems = useMemo(() => {
@@ -102,6 +108,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     handleClose();
   };
 
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   const getRoleDisplayName = (role: string) => {
     const roleNames = {
       admin: '系統管理員',
@@ -124,29 +134,44 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     <Box sx={{ display: 'flex' }}>
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
+          {/* 行動版選單按鈕 */}
+          {isMobile && (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+          
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             自動排班系統
           </Typography>
           
           {/* 使用者資訊 */}
           {userProfile && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Chip
-                label={getRoleDisplayName(userProfile.role)}
-                size="small"
-                color={getRoleColor(userProfile.role) as any}
-                variant="outlined"
-                sx={{ color: 'white', borderColor: 'rgba(255, 255, 255, 0.5)' }}
-              />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: isMobile ? 0.5 : 1 }}>
+              {!isMobile && (
+                <Chip
+                  label={getRoleDisplayName(userProfile.role)}
+                  size="small"
+                  color={getRoleColor(userProfile.role) as any}
+                  variant="outlined"
+                  sx={{ color: 'white', borderColor: 'rgba(255, 255, 255, 0.5)' }}
+                />
+              )}
               <IconButton
-                size="large"
+                size={isMobile ? "medium" : "large"}
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 onClick={handleMenu}
                 color="inherit"
               >
-                <Avatar sx={{ width: 32, height: 32 }}>
+                <Avatar sx={{ width: isMobile ? 28 : 32, height: isMobile ? 28 : 32 }}>
                   {userProfile.displayName.charAt(0)}
                 </Avatar>
               </IconButton>
@@ -191,32 +216,78 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           )}
         </Toolbar>
       </AppBar>
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+      {/* 桌面版側邊欄 */}
+      {!isMobile && (
+        <Drawer
+          variant="permanent"
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
+            [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+          }}
+        >
+          <Toolbar />
+          <Box sx={{ overflow: 'auto' }}>
+            <List>
+              {filteredNavItems.map((item) => (
+                <ListItem key={item.text} disablePadding>
+                  <ListItemButton
+                    selected={location.pathname === item.path}
+                    onClick={() => navigate(item.path)}
+                  >
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.text} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Drawer>
+      )}
+
+      {/* 行動版側邊欄 */}
+      {isMobile && (
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // 更好的行動版性能
+          }}
+          sx={{
+            display: { xs: 'block', md: 'none' },
+            [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+          }}
+        >
+          <Toolbar />
+          <Box sx={{ overflow: 'auto' }}>
+            <List>
+              {filteredNavItems.map((item) => (
+                <ListItem key={item.text} disablePadding>
+                  <ListItemButton
+                    selected={location.pathname === item.path}
+                    onClick={() => {
+                      navigate(item.path);
+                      handleDrawerToggle(); // 行動版點擊後關閉側邊欄
+                    }}
+                  >
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.text} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Drawer>
+      )}
+      <Box 
+        component="main" 
+        sx={{ 
+          flexGrow: 1, 
+          p: isMobile ? 2 : 3,
+          width: { sm: `calc(100% - ${isMobile ? 0 : drawerWidth}px)` }
         }}
       >
-        <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-          <List>
-            {filteredNavItems.map((item) => (
-              <ListItem key={item.text} disablePadding>
-                <ListItemButton
-                  selected={location.pathname === item.path}
-                  onClick={() => navigate(item.path)}
-                >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         {children}
       </Box>

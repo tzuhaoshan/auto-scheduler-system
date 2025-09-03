@@ -9,6 +9,7 @@ import {
   CardContent,
   Tooltip,
   useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import {
   ChevronLeft as ChevronLeftIcon,
@@ -33,6 +34,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   onShiftClick,
 }) => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   // 生成當前月份的日期陣列
@@ -114,17 +116,17 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   const weekDays = ['週一', '週二', '週三', '週四', '週五', '週六', '週日'];
 
   return (
-    <Paper elevation={2} sx={{ p: 3 }}>
+    <Paper elevation={2} sx={{ p: isMobile ? 2 : 3 }}>
       {/* 日曆標題和導航 */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h5" component="h2" sx={{ fontWeight: 'medium' }}>
+        <Typography variant={isMobile ? "h6" : "h5"} component="h2" sx={{ fontWeight: 'medium' }}>
           {format(currentMonth, 'yyyy年 M月', { locale: zhTW })}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <IconButton onClick={handlePreviousMonth} size="small">
+          <IconButton onClick={handlePreviousMonth} size={isMobile ? "small" : "medium"}>
             <ChevronLeftIcon />
           </IconButton>
-          <IconButton onClick={handleNextMonth} size="small">
+          <IconButton onClick={handleNextMonth} size={isMobile ? "small" : "medium"}>
             <ChevronRightIcon />
           </IconButton>
         </Box>
@@ -161,7 +163,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
               key={index}
               variant="outlined"
               sx={{
-                minHeight: 120,
+                minHeight: isMobile ? 80 : 120,
                 cursor: onDateClick ? 'pointer' : 'default',
                 backgroundColor: isCurrentMonth ? 'background.paper' : theme.palette.grey[50],
                 border: isCurrentDay ? `2px solid ${theme.palette.primary.main}` : undefined,
@@ -204,8 +206,8 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
                               sx={{
                                 backgroundColor: assignment ? getShiftColor(shift) : 'transparent',
                                 color: assignment ? 'white' : 'text.secondary',
-                                fontSize: '0.7rem',
-                                height: 20,
+                                fontSize: isMobile ? '0.6rem' : '0.7rem',
+                                height: isMobile ? 18 : 20,
                                 cursor: onShiftClick ? 'pointer' : 'default',
                                 '&:hover': onShiftClick ? {
                                   opacity: 0.8,

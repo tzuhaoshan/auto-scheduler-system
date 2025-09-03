@@ -266,7 +266,14 @@ const ScheduleManagementPage = () => {
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           查詢指定時間區間的班表明細和統計資訊
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 2, 
+          flexWrap: 'wrap',
+          flexDirection: { xs: 'column', sm: 'row' },
+          '& > *': { width: { xs: '100%', sm: 'auto' } }
+        }}>
           <TextField
             label="開始日期"
             type="date"
@@ -348,7 +355,14 @@ const ScheduleManagementPage = () => {
       {/* 查詢結果顯示區塊 */}
       {queriedSchedules.length > 0 && (
         <Paper sx={{ p: 3, mb: 4 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                      <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: { xs: 'flex-start', sm: 'center' },
+              flexDirection: { xs: 'column', sm: 'row' },
+              gap: { xs: 1, sm: 0 },
+              mb: 2 
+            }}>
             <Typography variant="h6">
               查詢結果 ({format(new Date(queryStartDate), 'MM/dd')} - {format(new Date(queryEndDate), 'MM/dd')})
               {queryEmployeeId && (
@@ -359,7 +373,12 @@ const ScheduleManagementPage = () => {
             </Typography>
             
             {/* 日曆/列表切換按鈕 */}
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            <Box sx={{ 
+              display: 'flex', 
+              gap: 1, 
+              flexDirection: { xs: 'column', sm: 'row' },
+              width: { xs: '100%', sm: 'auto' }
+            }}>
               <Button
                 variant={!showCalendar ? 'contained' : 'outlined'}
                 size="small"
