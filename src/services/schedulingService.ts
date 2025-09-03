@@ -46,14 +46,32 @@ const checkPersonalConstraints = (employee: Employee, shift: Shift, date: Date, 
   // 2. 獲取該班別的專屬限制
   const shiftConstraints = employee.constraints.byShift?.[shift];
 
-  // 如果該員工有此角色，但沒有設定專屬限制，則跳過專屬限制檢查 (或採用一個全域預設值)
+  // 3. 如果該員工有此角色，但沒有設定專屬限制，則套用預設限制
   if (!shiftConstraints) {
-    // 這裡我們假設若無明確設定，則不施加任何限制。
-    // 另一種策略是可以在此處套用一個系統級的預設限制。
-    return true; 
+    // 套用預設限制：週一到週五可排班，最小間隔1天，最大連續1天
+    const dayOfWeek = date.getDay() === 0 ? 7 : date.getDay(); 
+    if (dayOfWeek < 1 || dayOfWeek > 5) {
+      return false; // 週末不可排班
+    }
+    
+    const schedulesToCheck = [...existingSchedules, ...currentSchedule];
+    
+    // 檢查最小間隔 (預設1天)
+    const lastShiftDate = findLastShiftDate(employee.id, shift, schedulesToCheck);
+    if (lastShiftDate && differenceInDays(date, lastShiftDate) < 1) {
+      return false;
+    }
+    
+    // 檢查最大連續天數 (預設1天)
+    const consecutiveDays = countConsecutiveDays(employee.id, shift, date, schedulesToCheck);
+    if (consecutiveDays >= 1) {
+      return false;
+    }
+    
+    return true;
   }
 
-  // 3. 班別專屬限制檢查
+  // 4. 班別專屬限制檢查
   const dayOfWeek = date.getDay() === 0 ? 7 : date.getDay(); 
   if (!shiftConstraints.availableDays.includes(dayOfWeek)) {
     return false;
@@ -104,7 +122,7 @@ const countConsecutiveDays = (employeeId: string, shift: Shift, date: Date, sche
 };
 
 
-const selectBestCandidate = (candidates: Employee[], shift: string, date: Date): Employee | null => {
+const selectBestCandidate = (candidates: Employee[], shift: Shift, date: Date): Employee | null => {
   if (candidates.length === 0) return null;
   
   candidates.forEach(emp => {
@@ -128,7 +146,7 @@ const selectBestCandidate = (candidates: Employee[], shift: string, date: Date):
   return candidates[0];
 };
 
-const generateSeed = (date: Date, shift: string): string => {
+const generateSeed = (date: Date, shift: Shift): string => {
   return `${format(date, 'yyyy-MM-dd')}-${shift}`;
 };
 
@@ -142,7 +160,7 @@ const simpleHash = (str: string): number => {
   return Math.abs(hash);
 };
 
-const updateStats = (employeeId: string, shift: string): void => {
+const updateStats = (employeeId: string, shift: Shift): void => {
   currentSchedulingStats[employeeId][shift]++;
   historicalStats[employeeId][shift]++;
 };

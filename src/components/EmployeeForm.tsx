@@ -82,12 +82,23 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, employee, on
   }, [open, isEdit, employee, reset]);
 
   const onSubmit: SubmitHandler<EmployeeFormData> = (data) => {
-    // 確保只儲存有角色的班別限制
+    // 確保只儲存有角色的班別限制，並為沒有設定的班別提供預設值
     const finalConstraints = { ...data.constraints };
     finalConstraints.byShift = {};
     for (const shift of shifts) {
-      if (data.roles[shift] && data.constraints.byShift[shift]) {
-        finalConstraints.byShift[shift] = data.constraints.byShift[shift];
+      if (data.roles[shift]) {
+        if (data.constraints.byShift[shift]) {
+          // 如果設定了班別限制，使用設定的值
+          finalConstraints.byShift[shift] = data.constraints.byShift[shift];
+        } else {
+          // 如果沒有設定班別限制，提供預設值
+          finalConstraints.byShift[shift] = {
+            maxWeeklyShifts: 5, // 每週最多5天
+            minInterval: 1,     // 最小間隔1天
+            availableDays: [1, 2, 3, 4, 5], // 週一到週五
+            maxConsecutiveDays: 1 // 最大連續1天
+          };
+        }
       }
     }
     onSave({ ...data, constraints: finalConstraints });
