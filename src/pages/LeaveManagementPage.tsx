@@ -235,9 +235,9 @@ const LeaveManagementPage = () => {
                   <Typography variant="body2" component="p" sx={{ mb: 1 }}>
                     1. 請填入實際請假日期與時間。
                   </Typography>
-                  <Typography variant="body2" component="p" sx={{ mb: 1 }}>
-                    2. 延診請假：請填寫延診日期，時間請填寫 17:00-18:00。
-                  </Typography>
+                                 <Typography variant="body2" component="p" sx={{ mb: 1 }}>
+                 2. 延診：請填寫延診日期，時間請填寫 17:00-18:00。
+               </Typography>
                   <Typography variant="body2" component="p">
                     3. 處方評估研討會：請填寫研討會日期，時間請填寫 17:30-18:00。
                   </Typography>
