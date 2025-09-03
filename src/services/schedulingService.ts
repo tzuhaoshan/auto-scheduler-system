@@ -14,34 +14,62 @@ let historicalStats: Record<string, Record<string, number>> = {};
 
 // --- 核心輔助函數 ---
 
-const isOnLeave = (employeeId: string, date: Date, shift?: Shift): boolean => {
+// 檢查員工在特定日期是否請假（舊版本，僅用於向後兼容）
+const isOnLeave = (employeeId: string, date: Date): boolean => {
+  const targetDay = startOfDay(date);
+  return leaveRecords.some(record => 
+    record.employeeId === employeeId &&
+    isWithinInterval(targetDay, { start: startOfDay(record.start), end: startOfDay(record.end) })
+  );
+};
+
+// 檢查員工在特定班別是否與請假時間重疊
+const isOnLeaveForShift = (employeeId: string, date: Date, shift: Shift): boolean => {
+  const targetDay = startOfDay(date);
+  
   return leaveRecords.some(record => {
     if (record.employeeId !== employeeId) return false;
     
-    // 如果沒有指定班別，檢查整個日期是否有請假
-    if (!shift) {
-      const targetDay = startOfDay(date);
-      return isWithinInterval(targetDay, { start: startOfDay(record.start), end: startOfDay(record.end) });
+    // 檢查日期是否重疊
+    const leaveStart = startOfDay(record.start);
+    const leaveEnd = startOfDay(record.end);
+    
+    if (!isWithinInterval(targetDay, { start: leaveStart, end: leaveEnd })) {
+      return false;
     }
     
-    // 如果指定了班別，檢查班別時間是否與請假時間重疊
+    // 如果日期重疊，檢查時間是否重疊
     const shiftTimeRanges = {
-      'noon': { start: 12, end: 18 },      // 12:00-18:00
-      'phone': { start: 9, end: 18 },     // 09:00-18:00
-      'morning': { start: 9, end: 12.5 }, // 09:00-12:30
-      'afternoon': { start: 13.5, end: 18 } // 13:30-18:00
+      'noon': { start: '12:30', end: '13:30' },
+      'phone': { start: '09:00', end: '18:00' },
+      'morning': { start: '09:00', end: '12:30' },
+      'afternoon': { start: '13:30', end: '18:00' }
     };
     
     const shiftRange = shiftTimeRanges[shift];
     if (!shiftRange) return false;
     
-    // 檢查班別時間與請假時間是否有重疊
-    const leaveStartHour = record.start.getHours() + record.start.getMinutes() / 60;
-    const leaveEndHour = record.end.getHours() + record.end.getMinutes() / 60;
+    // 將時間轉換為分鐘數以便比較
+    const shiftStartMinutes = parseInt(shiftRange.start.split(':')[0]) * 60 + parseInt(shiftRange.start.split(':')[1]);
+    const shiftEndMinutes = parseInt(shiftRange.end.split(':')[0]) * 60 + parseInt(shiftRange.end.split(':')[1]);
     
-    // 重疊檢查：兩個時間區間有重疊的條件
-    // 重疊條件：班別開始時間 < 請假結束時間 且 請假開始時間 < 班別結束時間
-    return shiftRange.start < leaveEndHour && leaveStartHour < shiftRange.end;
+    // 從請假記錄中提取時間部分
+    const leaveStartTime = record.start;
+    const leaveEndTime = record.end;
+    
+    // 如果請假記錄包含時間信息，檢查時間重疊
+    if (leaveStartTime.getHours() !== 0 || leaveStartTime.getMinutes() !== 0 || 
+        leaveEndTime.getHours() !== 23 || leaveEndTime.getMinutes() !== 59) {
+      
+      const leaveStartMinutes = leaveStartTime.getHours() * 60 + leaveStartTime.getMinutes();
+      const leaveEndMinutes = leaveEndTime.getHours() * 60 + leaveEndTime.getMinutes();
+      
+      // 檢查時間重疊
+      return !(shiftEndMinutes <= leaveStartMinutes || shiftStartMinutes >= leaveEndMinutes);
+    }
+    
+    // 如果請假記錄是整天，則影響所有班別
+    return true;
   });
 };
 
@@ -213,16 +241,31 @@ export const schedulingService = {
   getCandidates(shift: Shift, date: Date, currentSchedule: DailySchedule[]): Employee[] {
     if (isExcludedDate(date)) return [];
 
-    return allEmployees.filter(emp => {
+    const candidates = allEmployees.filter(emp => {
       const hasRole = emp.roles[shift];
       const isActive = emp.isActive;
-      const notOnLeave = !isOnLeave(emp.id, date, shift); // 傳入 shift 參數
+      const notOnLeave = !isOnLeaveForShift(emp.id, date, shift);
       const notScheduled = !isAlreadyScheduled(emp.id, date);
       // 傳入 shift 參數
       const meetsConstraints = checkPersonalConstraints(emp, shift, date, currentSchedule);
       
+      // 添加調試日誌
+      if (emp.name === '測試員工' || emp.name === '測試員工2') {
+        console.log(`員工 ${emp.name} 班別 ${shift} 檢查:`, {
+          hasRole,
+          isActive,
+          notOnLeave,
+          notScheduled,
+          meetsConstraints,
+          onLeave: isOnLeaveForShift(emp.id, date, shift)
+        });
+      }
+      
       return hasRole && isActive && notOnLeave && notScheduled && meetsConstraints;
     });
+
+    console.log(`班別 ${shift} 於 ${format(date, 'yyyy-MM-dd')} 的候選人:`, candidates.map(c => c.name));
+    return candidates;
   },
 
   runScheduling(startDate: Date, endDate: Date): DailySchedule[] {
