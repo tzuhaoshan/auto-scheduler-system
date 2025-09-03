@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 臨時規則：允許所有讀寫操作（僅用於測試）
+    match /{document=**} {
+      allow read, write: if true;
+    }
+    
+    // 正式環境的安全規則（請在測試完成後使用）
+    /*
+    rules_version = '2';
+    service cloud.firestore {
+      match /databases/{database}/documents {
+        // 使用者資料
+        match /users/{userId} {
+          allow read: if request.auth != null && (request.auth.uid == userId || resource.data.role == 'admin');
+          allow write: if request.auth != null && request.auth.uid == userId;
+        }
+        
+        // 員工資料
+        match /employees/{employeeId} {
+          allow read: if request.auth != null;
+          allow write: if request.auth != null && 
+            (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'manager']);
+        }
+        
+        // 其他集合的規則...
+      }
+    }
+    */
+  }
+}
