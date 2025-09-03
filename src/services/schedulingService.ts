@@ -39,8 +39,9 @@ const isOnLeave = (employeeId: string, date: Date, shift?: Shift): boolean => {
     const leaveStartHour = record.start.getHours() + record.start.getMinutes() / 60;
     const leaveEndHour = record.end.getHours() + record.end.getMinutes() / 60;
     
-    // 重疊檢查：班別開始時間 < 請假結束時間 且 班別結束時間 > 請假開始時間
-    return shiftRange.start < leaveEndHour && shiftRange.end > leaveStartHour;
+    // 重疊檢查：兩個時間區間有重疊的條件
+    // 重疊條件：班別開始時間 < 請假結束時間 且 請假開始時間 < 班別結束時間
+    return shiftRange.start < leaveEndHour && leaveStartHour < shiftRange.end;
   });
 };
 
