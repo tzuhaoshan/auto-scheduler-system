@@ -61,10 +61,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const filteredNavItems = useMemo(() => {
     const userRole = userProfile?.role;
     
-    // 如果是管理員，只顯示最高權限的項目
-    if (userRole === 'admin') {
+    // 如果是管理員或管理者，只顯示最高權限的項目
+    if (userRole === 'admin' || userRole === 'manager') {
       return navItems.filter(item => {
-        // 管理員可以看到所有項目，但避免重複的班表相關項目
+        // 管理員和管理者都可以看到所有項目，但避免重複的班表相關項目
         if (item.path === '/schedule') {
           // 只顯示「班表管理」，不顯示「班表查詢」
           return item.role === 'manager';
@@ -73,7 +73,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       });
     }
     
-    // 其他角色正常過濾
+    // 員工角色正常過濾
     return navItems.filter(item => 
       hasPermission(item.role as 'admin' | 'manager' | 'employee')
     );
