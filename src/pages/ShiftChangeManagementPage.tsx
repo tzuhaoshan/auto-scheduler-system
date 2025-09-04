@@ -33,6 +33,7 @@ const getShiftDisplayName = (shift: string) => {
     noon: '午班',
     afternoon: '晚班',
     phone: '電話班',
+    verify: '處方審核',
   };
   return names[shift] || shift;
 };

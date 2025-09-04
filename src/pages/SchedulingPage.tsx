@@ -57,7 +57,7 @@ const SchedulingPage = () => {
   }, []);
 
   // 定義固定的班別順序
-  const SHIFT_ORDER: string[] = ['noon', 'phone', 'morning', 'afternoon'];
+  const SHIFT_ORDER: string[] = ['noon', 'phone', 'morning', 'afternoon', 'verify'];
 
   const handleRunScheduling = async () => {
     if (!startDate || !endDate) {
@@ -143,7 +143,8 @@ const SchedulingPage = () => {
       'noon': '諮詢台值午',
       'phone': '諮詢電話',
       'morning': '上午支援',
-      'afternoon': '下午支援'
+      'afternoon': '下午支援',
+      'verify': '處方審核'
     };
     return shiftNames[shift] || shift;
   };
@@ -154,7 +155,8 @@ const SchedulingPage = () => {
       'noon': '#FF6B6B',
       'phone': '#4ECDC4',
       'morning': '#45B7D1',
-      'afternoon': '#96CEB4'
+      'afternoon': '#96CEB4',
+      'verify': '#9B59B6'
     };
     return colors[shift] || '#95A5A6';
   };
