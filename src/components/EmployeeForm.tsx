@@ -16,6 +16,15 @@ interface EmployeeFormProps {
 const shifts: Shift[] = ['noon', 'phone', 'morning', 'afternoon', 'verify'];
 const weekDays = ['週一', '週二', '週三', '週四', '週五', '週六', '週日'];
 
+// 班別顯示名稱對應
+const shiftDisplayNames: Record<Shift, string> = {
+  noon: '諮詢台值午',
+  phone: '諮詢電話',
+  morning: '上午支援',
+  afternoon: '下午支援',
+  verify: '處方審核',
+};
+
 export interface EmployeeFormData {
   name: string;
   employeeId: string;
@@ -129,7 +138,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, employee, on
             <Tabs value={currentTab} onChange={handleTabChange} variant="scrollable" scrollButtons="auto">
               <Tab label="通用設定" value="general" />
               {availableShifts.map(shift => (
-                 <Tab key={shift} label={`${shift.charAt(0).toUpperCase() + shift.slice(1)} 班次限制`} value={shift} />
+                 <Tab key={shift} label={`${shiftDisplayNames[shift]} 班次限制`} value={shift} />
               ))}
             </Tabs>
           </Box>
@@ -152,7 +161,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, employee, on
                 <FormGroup row>
                   {shifts.map((shift) => (
                     <Controller key={shift} name={`roles.${shift}`} control={control} render={({ field }) => (
-                      <FormControlLabel control={<Checkbox {...field} checked={!!field.value} />} label={shift.charAt(0).toUpperCase() + shift.slice(1)} />
+                      <FormControlLabel control={<Checkbox {...field} checked={!!field.value} />} label={shiftDisplayNames[shift]} />
                     )} />
                   ))}
                 </FormGroup>
@@ -195,7 +204,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, employee, on
                 {currentTab === shift && (
                   <Box>
                     {/* Per-shift constraint fields */}
-                    <Typography variant="h6">{`${shift.charAt(0).toUpperCase() + shift.slice(1)} 班次限制`}</Typography>
+                    <Typography variant="h6">{`${shiftDisplayNames[shift]} 班次限制`}</Typography>
                     {/* (Add fields for maxWeeklyShifts, minInterval, etc., scoped to `constraints.byShift.${shift}`) */}
                     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 2, alignItems: 'center' }}>
                       <Controller name={`constraints.byShift.${shift}.maxWeeklyShifts`} control={control} render={({ field }) => (
