@@ -30,6 +30,7 @@ export const scheduleService = {
         phone: null,
         morning: null,
         afternoon: null,
+        verify: null,
       };
 
       // 轉換 shifts Map 為可序列化的物件

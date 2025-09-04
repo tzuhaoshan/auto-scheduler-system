@@ -238,7 +238,7 @@ const ImportDialog: React.FC<ImportDialogProps> = ({ open, onClose, onImport, em
   );
 };
 
-const shifts: Shift[] = ['noon', 'phone', 'morning', 'afternoon'];
+  const shifts: Shift[] = ['noon', 'phone', 'morning', 'afternoon', 'verify'];
 
 const shiftDisplayNames: Record<Shift, string> = {
   noon: '諮詢台值午',

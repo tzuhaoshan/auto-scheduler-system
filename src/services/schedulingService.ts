@@ -286,7 +286,7 @@ export const schedulingService = {
       }
       
       const dailySchedule: DailySchedule = { date: current.toISOString().split('T')[0], shifts: {} };
-      const shifts = ['noon', 'phone', 'morning', 'afternoon'] as const;
+      const shifts = ['noon', 'phone', 'morning', 'afternoon', 'verify'] as const;
       
       for (const shift of shifts) {
         let candidates = this.getCandidates(shift, current, results);
