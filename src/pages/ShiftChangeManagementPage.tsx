@@ -29,10 +29,11 @@ const statusMap: Record<ShiftChangeStatus, { label: string; color: any }> = {
 
 const getShiftDisplayName = (shift: string) => {
   const names: Record<string, string> = {
-    morning: '早班',
-    noon: '午班',
-    afternoon: '晚班',
-    phone: '電話班',
+    morning: '上午支援',
+    noon: '諮詢台值午',
+    afternoon: '下午支援',
+    phone: '諮詢電話',
+    verify: '處方審核',
   };
   return names[shift] || shift;
 };
