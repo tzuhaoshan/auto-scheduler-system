@@ -13,7 +13,7 @@ interface EmployeeFormProps {
   onSave: (data: EmployeeFormData) => void;
 }
 
-const shifts: Shift[] = ['noon', 'phone', 'morning', 'afternoon'];
+const shifts: Shift[] = ['noon', 'phone', 'morning', 'afternoon', 'verify'];
 const weekDays = ['週一', '週二', '週三', '週四', '週五', '週六', '週日'];
 
 export interface EmployeeFormData {
@@ -68,7 +68,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, employee, on
         reset({
           name: '',
           employeeId: '',
-          roles: { noon: false, phone: false, morning: false, afternoon: false },
+          roles: { noon: false, phone: false, morning: false, afternoon: false, verify: false },
           constraints: {
             dailyMax: 1,
             unavailableDates: [],
