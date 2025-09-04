@@ -100,10 +100,11 @@ const ImportDialog: React.FC<ImportDialogProps> = ({ open, onClose, onImport, em
           employeeId: employee.id,
           name: employee.name,
           stats: {
-            noon: parseInt(rowData['諮詢台值午'], 10) || 0,
-            phone: parseInt(rowData['諮詢電話'], 10) || 0,
-            morning: parseInt(rowData['上午支援'], 10) || 0,
-            afternoon: parseInt(rowData['下午支援'], 10) || 0,
+                    noon: parseInt(rowData['諮詢台值午'], 10) || 0,
+        phone: parseInt(rowData['諮詢電話'], 10) || 0,
+        morning: parseInt(rowData['上午支援'], 10) || 0,
+        afternoon: parseInt(rowData['下午支援'], 10) || 0,
+        verify: parseInt(rowData['處方審核'], 10) || 0,
           }
         });
       }
@@ -205,16 +206,18 @@ const ImportDialog: React.FC<ImportDialogProps> = ({ open, onClose, onImport, em
                       <TableCell align="center">諮詢電話</TableCell>
                       <TableCell align="center">上午支援</TableCell>
                       <TableCell align="center">下午支援</TableCell>
+                      <TableCell align="center">處方審核</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {previewData.map((row, index) => (
                       <TableRow key={index}>
                         <TableCell>{row.name}</TableCell>
-                        <TableCell align="center">{row.stats.noon}</TableCell>
-                        <TableCell align="center">{row.stats.phone}</TableCell>
-                        <TableCell align="center">{row.stats.morning}</TableCell>
-                        <TableCell align="center">{row.stats.afternoon}</TableCell>
+                                      <TableCell align="center">{row.stats.noon}</TableCell>
+              <TableCell align="center">{row.stats.phone}</TableCell>
+              <TableCell align="center">{row.stats.morning}</TableCell>
+              <TableCell align="center">{row.stats.afternoon}</TableCell>
+              <TableCell align="center">{row.stats.verify}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -238,13 +241,14 @@ const ImportDialog: React.FC<ImportDialogProps> = ({ open, onClose, onImport, em
   );
 };
 
-  const shifts: Shift[] = ['noon', 'phone', 'morning', 'afternoon', 'verify'];
+const shifts: Shift[] = ['noon', 'phone', 'morning', 'afternoon', 'verify'];
 
 const shiftDisplayNames: Record<Shift, string> = {
   noon: '諮詢台值午',
   phone: '諮詢電話',
   morning: '上午支援',
   afternoon: '下午支援',
+  verify: '處方審核',
 };
 
 const shiftColors: Record<Shift, string> = {
@@ -252,6 +256,7 @@ const shiftColors: Record<Shift, string> = {
   phone: '#4ECDC4',
   morning: '#45B7D1',
   afternoon: '#96CEB4',
+  verify: '#FFA726',
 };
 
 interface EditStatsDialogProps {
@@ -267,6 +272,7 @@ const EditStatsDialog: React.FC<EditStatsDialogProps> = ({ open, onClose, employ
     phone: 0,
     morning: 0,
     afternoon: 0,
+    verify: 0,
   });
 
   useEffect(() => {
@@ -422,11 +428,11 @@ const StatsManagementPage: React.FC = () => {
     const data = employees.map(employee => ({
       員工姓名: employee.name,
       員工編號: employee.employeeId,
-              諮詢台值午: employee.historicalStats?.noon || 0,
-        諮詢電話: employee.historicalStats?.phone || 0,
-        上午支援: employee.historicalStats?.morning || 0,
-        下午支援: employee.historicalStats?.afternoon || 0,
-        處方審核: employee.historicalStats?.verify || 0,
+      諮詢台值午: employee.historicalStats?.noon || 0,
+      諮詢電話: employee.historicalStats?.phone || 0,
+      上午支援: employee.historicalStats?.morning || 0,
+      下午支援: employee.historicalStats?.afternoon || 0,
+      處方審核: employee.historicalStats?.verify || 0,
       最後更新: formatDate(employee.historicalStats?.lastUpdated, { includeTime: true }),
     }));
     

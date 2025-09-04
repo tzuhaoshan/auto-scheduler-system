@@ -30,7 +30,6 @@ export interface HistoricalStats {
   noon: number;
   afternoon: number;
   phone: number;
-  verify: number;
   lastUpdated: Date;
 }
 

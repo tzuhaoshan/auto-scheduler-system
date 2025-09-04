@@ -177,10 +177,10 @@ const countConsecutiveDays = (employeeId: string, shift: Shift, date: Date, sche
 const selectBestCandidate = (candidates: Employee[], shift: Shift, date: Date): Employee | null => {
   if (candidates.length === 0) return null;
   
-  candidates.forEach(emp => {
-          currentSchedulingStats[emp.id] = currentSchedulingStats[emp.id] || { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
+      candidates.forEach(emp => {
+      currentSchedulingStats[emp.id] = currentSchedulingStats[emp.id] || { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
       historicalStats[emp.id] = historicalStats[emp.id] || { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
-  });
+    });
   
   candidates.sort((a, b) => {
     const aCurrent = currentSchedulingStats[a.id][shift] || 0;
@@ -285,8 +285,8 @@ export const schedulingService = {
         continue;
       }
       
-      const dailySchedule: DailySchedule = { date: current.toISOString().split('T')[0], shifts: {} };
-      const shifts = ['noon', 'phone', 'morning', 'afternoon', 'verify'] as const;
+              const dailySchedule: DailySchedule = { date: current.toISOString().split('T')[0], shifts: {} };
+        const shifts = ['noon', 'phone', 'morning', 'afternoon', 'verify'] as const;
       
       for (const shift of shifts) {
         let candidates = this.getCandidates(shift, current, results);

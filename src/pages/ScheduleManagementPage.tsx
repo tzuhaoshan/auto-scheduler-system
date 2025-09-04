@@ -241,7 +241,7 @@ const ScheduleManagementPage = () => {
       'phone': '#4ECDC4',
       'morning': '#45B7D1',
       'afternoon': '#96CEB4',
-      'verify': '#9B59B6'
+      'verify': '#FFA726'
     };
     return colors[shift] || '#95A5A6';
   };

@@ -124,9 +124,9 @@ export const scheduleService = {
         const assignment = schedule.shifts[shift];
         if (assignment) {
           const { employeeId } = assignment;
-          if (!stats[employeeId]) {
-            stats[employeeId] = { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
-          }
+                  if (!stats[employeeId]) {
+          stats[employeeId] = { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
+        }
           stats[employeeId][shift]++;
         }
       }

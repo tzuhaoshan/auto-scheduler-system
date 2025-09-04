@@ -106,6 +106,7 @@ export const employeeService = {
           noon: (currentStats.noon || 0) + (newCounts.noon || 0),
           afternoon: (currentStats.afternoon || 0) + (newCounts.afternoon || 0),
           phone: (currentStats.phone || 0) + (newCounts.phone || 0),
+          verify: (currentStats.verify || 0) + (newCounts.verify || 0),
           lastUpdated: serverTimestamp()
         };
 
@@ -233,17 +234,17 @@ export const employeeService = {
    * @param statsData - 要設定的統計資料陣列
    */
   async setHistoricalStats(
-    statsData: Array<{
-      employeeId: string;
-      historicalStats: {
-        morning: number;
-        noon: number;
-        afternoon: number;
-        phone: number;
-        verify: number;
-        lastUpdated: Date;
-      };
-    }>
+          statsData: Array<{
+        employeeId: string;
+        historicalStats: {
+          morning: number;
+          noon: number;
+          afternoon: number;
+          phone: number;
+          verify: number;
+          lastUpdated: Date;
+        };
+      }>
   ): Promise<void> {
     console.log('開始批量更新歷史統計:', statsData);
 
