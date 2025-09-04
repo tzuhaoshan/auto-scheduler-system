@@ -124,6 +124,8 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, employee, on
   const handleRemoveUnavailableDate = (dateToRemove: string) => {
     setValue('constraints.unavailableDates', watchedUnavailableDates.filter(date => date !== dateToRemove));
   };
+
+
   
   const handleTabChange = (_event: React.SyntheticEvent, newValue: Shift | 'general') => {
     setCurrentTab(newValue);
@@ -204,36 +206,76 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, employee, on
                 {currentTab === shift && (
                   <Box>
                     {/* Per-shift constraint fields */}
-                    <Typography variant="h6">{`${shiftDisplayNames[shift]} 班次限制`}</Typography>
-                    {/* (Add fields for maxWeeklyShifts, minInterval, etc., scoped to `constraints.byShift.${shift}`) */}
-                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 2, alignItems: 'center' }}>
-                      <Controller name={`constraints.byShift.${shift}.maxWeeklyShifts`} control={control} render={({ field }) => (
-                        <TextField {...field} label="每週最大班次" type="number" fullWidth onChange={e => field.onChange(parseInt(e.target.value, 10))} />
-                      )} />
-                      <Controller name={`constraints.byShift.${shift}.minInterval`} control={control} render={({ field }) => (
-                        <TextField {...field} label="最小間隔天數" type="number" fullWidth onChange={e => field.onChange(parseInt(e.target.value, 10))} />
-                      )} />
-                      <Controller name={`constraints.byShift.${shift}.maxConsecutiveDays`} control={control} render={({ field }) => (
-                        <TextField {...field} label="最大連續排班天數" type="number" fullWidth onChange={e => field.onChange(parseInt(e.target.value, 10))} />
-                      )} />
+                    <Typography variant="h6" sx={{ mb: 3 }}>{`${shiftDisplayNames[shift]} 班次限制`}</Typography>
+                    
+                    {/* 基本限制設定 */}
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 2, alignItems: 'center', mb: 3 }}>
+                      <Controller 
+                        name={`constraints.byShift.${shift}.maxWeeklyShifts`} 
+                        control={control} 
+                        defaultValue={5}
+                        render={({ field }) => (
+                          <TextField 
+                            {...field} 
+                            label="每週最大班次" 
+                            type="number" 
+                            fullWidth 
+                            value={field.value || 5}
+                            onChange={e => field.onChange(parseInt(e.target.value, 10) || 5)} 
+                          />
+                        )} 
+                      />
+                      <Controller 
+                        name={`constraints.byShift.${shift}.minInterval`} 
+                        control={control} 
+                        defaultValue={1}
+                        render={({ field }) => (
+                          <TextField 
+                            {...field} 
+                            label="最小間隔天數" 
+                            type="number" 
+                            fullWidth 
+                            value={field.value || 1}
+                            onChange={e => field.onChange(parseInt(e.target.value, 10) || 1)} 
+                          />
+                        )} 
+                      />
+                      <Controller 
+                        name={`constraints.byShift.${shift}.maxConsecutiveDays`} 
+                        control={control} 
+                        defaultValue={1}
+                        render={({ field }) => (
+                          <TextField 
+                            {...field} 
+                            label="最大連續排班天數" 
+                            type="number" 
+                            fullWidth 
+                            value={field.value || 1}
+                            onChange={e => field.onChange(parseInt(e.target.value, 10) || 1)} 
+                          />
+                        )} 
+                      />
                     </Box>
 
+                    {/* 可排班的星期 */}
                     <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>可排班的星期</Typography>
-                    <FormGroup row>
+                    <FormGroup row sx={{ mb: 3 }}>
                       {weekDays.map((day, index) => (
                         <Controller
                           key={day}
                           name={`constraints.byShift.${shift}.availableDays`}
                           control={control}
+                          defaultValue={[1, 2, 3, 4, 5]}
                           render={({ field }) => (
                             <FormControlLabel
                               control={
                                 <Checkbox
-                                  checked={field.value.includes(index + 1)}
+                                  checked={(field.value || [1, 2, 3, 4, 5]).includes(index + 1)}
                                   onChange={(e) => {
+                                    const currentDays = field.value || [1, 2, 3, 4, 5];
                                     const newDays = e.target.checked
-                                      ? [...field.value, index + 1]
-                                      : field.value.filter((d: number) => d !== index + 1);
+                                      ? [...currentDays, index + 1]
+                                      : currentDays.filter((d: number) => d !== index + 1);
                                     field.onChange(newDays.sort());
                                   }}
                                 />
@@ -245,28 +287,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, employee, on
                       ))}
                     </FormGroup>
                     
-                    <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>不可排班的特定日期</Typography>
-                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 1 }}>
-                       <TextField 
-                         type="date" 
-                         value={newUnavailableDate} 
-                         onChange={(e) => setNewUnavailableDate(e.target.value)}
-                         InputLabelProps={{ shrink: true }}
-                         label="新增日期"
-                       />
-                       <Button onClick={handleAddUnavailableDate} variant="outlined">新增</Button>
-                    </Box>
-                    <List dense>
-                      {watchedUnavailableDates.map((date) => (
-                        <ListItem key={date} secondaryAction={
-                          <IconButton edge="end" aria-label="delete" onClick={() => handleRemoveUnavailableDate(date)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        }>
-                          <ListItemText primary={date} />
-                        </ListItem>
-                      ))}
-                    </List>
+
                   </Box>
                 )}
               </Box>
