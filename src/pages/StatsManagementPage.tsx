@@ -276,6 +276,7 @@ const EditStatsDialog: React.FC<EditStatsDialogProps> = ({ open, onClose, employ
         phone: employee.historicalStats.phone || 0,
         morning: employee.historicalStats.morning || 0,
         afternoon: employee.historicalStats.afternoon || 0,
+        verify: employee.historicalStats.verify || 0,
       });
     }
   }, [employee]);
@@ -400,6 +401,7 @@ const StatsManagementPage: React.FC = () => {
           phone: 0,
           morning: 0,
           afternoon: 0,
+          verify: 0,
           lastUpdated: new Date(),
         }
       }));
@@ -420,10 +422,11 @@ const StatsManagementPage: React.FC = () => {
     const data = employees.map(employee => ({
       員工姓名: employee.name,
       員工編號: employee.employeeId,
-      諮詢台值午: employee.historicalStats?.noon || 0,
-      諮詢電話: employee.historicalStats?.phone || 0,
-      上午支援: employee.historicalStats?.morning || 0,
-      下午支援: employee.historicalStats?.afternoon || 0,
+              諮詢台值午: employee.historicalStats?.noon || 0,
+        諮詢電話: employee.historicalStats?.phone || 0,
+        上午支援: employee.historicalStats?.morning || 0,
+        下午支援: employee.historicalStats?.afternoon || 0,
+        處方審核: employee.historicalStats?.verify || 0,
       最後更新: formatDate(employee.historicalStats?.lastUpdated, { includeTime: true }),
     }));
     
@@ -470,14 +473,15 @@ const StatsManagementPage: React.FC = () => {
 
   const getTotalStats = () => {
     return employees.reduce((total, employee) => {
-      const stats = employee.historicalStats || { noon: 0, phone: 0, morning: 0, afternoon: 0 };
+      const stats = employee.historicalStats || { noon: 0, phone: 0, morning: 0, afternoon: 0, verify: 0 };
       return {
         noon: total.noon + (stats.noon || 0),
         phone: total.phone + (stats.phone || 0),
         morning: total.morning + (stats.morning || 0),
         afternoon: total.afternoon + (stats.afternoon || 0),
+        verify: total.verify + (stats.verify || 0),
       };
-    }, { noon: 0, phone: 0, morning: 0, afternoon: 0 });
+    }, { noon: 0, phone: 0, morning: 0, afternoon: 0, verify: 0 });
   };
 
   const totalStats = getTotalStats();

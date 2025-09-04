@@ -577,7 +577,7 @@ function canOverrideHoliday(date, reason) {
   requesterId: "string",               // 申請者員工ID
   requesterShift: {
     date: "YYYY-MM-DD",
-    shift: "morning" | "noon" | "afternoon" | "phone",
+    shift: "morning" | "noon" | "afternoon" | "phone" | "verify",
     originalAssignee: "string"         // 原排班員工ID
   },
   
@@ -585,7 +585,7 @@ function canOverrideHoliday(date, reason) {
   targetId: "string",                  // 換班對象員工ID
   targetShift: {
     date: "YYYY-MM-DD", 
-    shift: "morning" | "noon" | "afternoon" | "phone",
+    shift: "morning" | "noon" | "afternoon" | "phone" | "verify",
     originalAssignee: "string"
   },
   

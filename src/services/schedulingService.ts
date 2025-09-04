@@ -43,7 +43,8 @@ const isOnLeaveForShift = (employeeId: string, date: Date, shift: Shift): boolea
       'noon': { start: '12:30', end: '13:30' },
       'phone': { start: '09:00', end: '18:00' },
       'morning': { start: '09:00', end: '12:30' },
-      'afternoon': { start: '13:30', end: '18:00' }
+      'afternoon': { start: '13:30', end: '18:00' },
+      'verify': { start: '09:00', end: '18:00' }
     };
     
     const shiftRange = shiftTimeRanges[shift];
@@ -177,8 +178,8 @@ const selectBestCandidate = (candidates: Employee[], shift: Shift, date: Date): 
   if (candidates.length === 0) return null;
   
   candidates.forEach(emp => {
-    currentSchedulingStats[emp.id] = currentSchedulingStats[emp.id] || { morning: 0, noon: 0, afternoon: 0, phone: 0 };
-    historicalStats[emp.id] = historicalStats[emp.id] || { morning: 0, noon: 0, afternoon: 0, phone: 0 };
+          currentSchedulingStats[emp.id] = currentSchedulingStats[emp.id] || { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
+      historicalStats[emp.id] = historicalStats[emp.id] || { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
   });
   
   candidates.sort((a, b) => {
@@ -232,6 +233,7 @@ export const schedulingService = {
         noon: emp.historicalStats?.noon || 0,
         afternoon: emp.historicalStats?.afternoon || 0,
         phone: emp.historicalStats?.phone || 0,
+        verify: emp.historicalStats?.verify || 0,
       };
     });
     

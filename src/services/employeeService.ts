@@ -75,7 +75,7 @@ export const employeeService = {
           const shiftType = Object.keys(schedule.shifts).find(key => schedule.shifts[key as Shift] === shift) as Shift;
           
           if (!statsUpdate[employeeId]) {
-            statsUpdate[employeeId] = { morning: 0, noon: 0, afternoon: 0, phone: 0 };
+            statsUpdate[employeeId] = { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
           }
           if(shiftType) {
             statsUpdate[employeeId][shiftType]++;
@@ -99,7 +99,7 @@ export const employeeService = {
         const employeeDocRef = doc(db, 'employees', employeeId);
         
         // 取得現有的統計資料，如果不存在則初始化
-        const currentStats = employee.historicalStats || { morning: 0, noon: 0, afternoon: 0, phone: 0 };
+        const currentStats = employee.historicalStats || { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
         
         const updatedStats = {
           morning: (currentStats.morning || 0) + (newCounts.morning || 0),
@@ -174,7 +174,7 @@ export const employeeService = {
         if (assignment) {
           const { employeeId } = assignment;
           if (!statsToRevert[employeeId]) {
-            statsToRevert[employeeId] = { morning: 0, noon: 0, afternoon: 0, phone: 0 };
+            statsToRevert[employeeId] = { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
           }
           statsToRevert[employeeId][shift]++;
         }
@@ -240,6 +240,7 @@ export const employeeService = {
         noon: number;
         afternoon: number;
         phone: number;
+        verify: number;
         lastUpdated: Date;
       };
     }>
@@ -263,6 +264,7 @@ export const employeeService = {
           noon: historicalStats.noon,
           afternoon: historicalStats.afternoon,
           phone: historicalStats.phone,
+          verify: historicalStats.verify,
           lastUpdated: serverTimestamp(),
         }
       });
