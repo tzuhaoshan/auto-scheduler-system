@@ -164,6 +164,7 @@ const LeaveManagementPage = () => {
       meeting: '會議',
       other_duty: '其他值班',
       compensatory_leave: '排班補休',
+      official_leave: '公假',
     };
     return typeMap[type as keyof typeof typeMap] || '未知';
   };

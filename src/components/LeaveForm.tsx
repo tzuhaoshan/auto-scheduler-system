@@ -140,6 +140,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ open, onClose, leave, employees, 
                   <MenuItem value="meeting">會議</MenuItem>
                   <MenuItem value="other_duty">其他值班</MenuItem>
                   <MenuItem value="compensatory_leave">排班補休</MenuItem>
+                  <MenuItem value="official_leave">公假</MenuItem>
                 </Select>
               )}
             />

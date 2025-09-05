@@ -1,7 +1,7 @@
 /**
  * 請假類型
  */
-export type LeaveType = 'annual' | 'sick' | 'personal' | 'meeting' | 'other_duty' | 'compensatory_leave';
+export type LeaveType = 'annual' | 'sick' | 'personal' | 'meeting' | 'other_duty' | 'compensatory_leave' | 'official_leave';
 
 /**
  * 請假申請狀態

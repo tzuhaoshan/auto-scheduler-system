@@ -216,7 +216,7 @@ const ON_DEMAND_SHIFTS = ['morning', 'afternoon'];
   employeeId: "string",
   startTime: Timestamp, // UTC
   endTime: Timestamp,   // UTC
-  leaveType: "annual" | "sick" | "personal",
+  leaveType: "annual" | "sick" | "personal" | "meeting" | "other_duty" | "compensatory_leave" | "official_leave",
   reason: "string",
   status: "pending" | "approved" | "rejected",
   appliedAt: Timestamp,
