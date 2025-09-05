@@ -30,7 +30,8 @@ export const scheduleService = {
         phone: null,
         morning: null,
         afternoon: null,
-        verify: null,
+        verify1: null,
+        verify2: null,
       };
 
       // 轉換 shifts Map 為可序列化的物件
@@ -125,7 +126,7 @@ export const scheduleService = {
         if (assignment) {
           const { employeeId } = assignment;
                   if (!stats[employeeId]) {
-          stats[employeeId] = { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
+          stats[employeeId] = { morning: 0, noon: 0, afternoon: 0, phone: 0, verify1: 0, verify2: 0 };
         }
           stats[employeeId][shift]++;
         }

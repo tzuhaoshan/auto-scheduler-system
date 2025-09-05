@@ -44,7 +44,8 @@ const isOnLeaveForShift = (employeeId: string, date: Date, shift: Shift): boolea
       'phone': { start: '09:00', end: '18:00' },
       'morning': { start: '09:00', end: '12:30' },
       'afternoon': { start: '13:30', end: '18:00' },
-      'verify': { start: '09:00', end: '18:00' }
+      'verify1': { start: '09:00', end: '18:00' },
+      'verify2': { start: '09:00', end: '18:00' }
     };
     
     const shiftRange = shiftTimeRanges[shift];
@@ -178,8 +179,8 @@ const selectBestCandidate = (candidates: Employee[], shift: Shift, date: Date): 
   if (candidates.length === 0) return null;
   
       candidates.forEach(emp => {
-      currentSchedulingStats[emp.id] = currentSchedulingStats[emp.id] || { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
-      historicalStats[emp.id] = historicalStats[emp.id] || { morning: 0, noon: 0, afternoon: 0, phone: 0, verify: 0 };
+      currentSchedulingStats[emp.id] = currentSchedulingStats[emp.id] || { morning: 0, noon: 0, afternoon: 0, phone: 0, verify1: 0, verify2: 0 };
+      historicalStats[emp.id] = historicalStats[emp.id] || { morning: 0, noon: 0, afternoon: 0, phone: 0, verify1: 0, verify2: 0 };
     });
   
   candidates.sort((a, b) => {
@@ -233,7 +234,8 @@ export const schedulingService = {
         noon: emp.historicalStats?.noon || 0,
         afternoon: emp.historicalStats?.afternoon || 0,
         phone: emp.historicalStats?.phone || 0,
-        verify: emp.historicalStats?.verify || 0,
+        verify1: emp.historicalStats?.verify1 || 0,
+        verify2: emp.historicalStats?.verify2 || 0,
       };
     });
     
@@ -286,7 +288,7 @@ export const schedulingService = {
       }
       
               const dailySchedule: DailySchedule = { date: current.toISOString().split('T')[0], shifts: {} };
-        const shifts = ['noon', 'phone', 'morning', 'afternoon', 'verify'] as const;
+        const shifts = ['noon', 'phone', 'morning', 'afternoon', 'verify1', 'verify2'] as const;
       
       for (const shift of shifts) {
         let candidates = this.getCandidates(shift, current, results);

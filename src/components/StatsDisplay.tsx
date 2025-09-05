@@ -15,7 +15,8 @@ const StatsDisplay = ({ title, stats, employees }: StatsDisplayProps) => {
     'phone': '諮詢電話',
     'morning': '上午支援',
     'afternoon': '下午支援',
-    'verify': '處方審核'
+    'verify1': '處方審核(主)',
+    'verify2': '處方審核(輔)'
   };
 
   if (!stats || Object.keys(stats).length === 0) {

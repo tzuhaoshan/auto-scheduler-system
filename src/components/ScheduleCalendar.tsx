@@ -65,7 +65,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   };
 
   // 定義固定的班別順序
-  const SHIFT_ORDER: string[] = ['noon', 'phone', 'morning', 'afternoon', 'verify'];
+  const SHIFT_ORDER: string[] = ['noon', 'phone', 'morning', 'afternoon', 'verify1', 'verify2'];
 
   // 獲取班別顯示名稱
   const getShiftDisplayName = (shift: string): string => {
@@ -74,7 +74,8 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
       'phone': '諮詢電話',
       'morning': '上午支援',
       'afternoon': '下午支援',
-      'verify': '處方審核'
+      'verify1': '處方審核(主)',
+      'verify2': '處方審核(輔)'
     };
     return shiftNames[shift] || shift;
   };
@@ -86,7 +87,8 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
       'phone': '#4ECDC4',
       'morning': '#45B7D1',
       'afternoon': '#96CEB4',
-      'verify': '#FFA726'
+      'verify1': '#FFA726',
+      'verify2': '#26A69A'
     };
     return colors[shift] || '#95A5A6';
   };

@@ -104,7 +104,8 @@ const ImportDialog: React.FC<ImportDialogProps> = ({ open, onClose, onImport, em
         phone: parseInt(rowData['諮詢電話'], 10) || 0,
         morning: parseInt(rowData['上午支援'], 10) || 0,
         afternoon: parseInt(rowData['下午支援'], 10) || 0,
-        verify: parseInt(rowData['處方審核'], 10) || 0,
+        verify1: parseInt(rowData['處方審核(主)'], 10) || 0,
+        verify2: parseInt(rowData['處方審核(輔)'], 10) || 0,
           }
         });
       }
@@ -206,7 +207,8 @@ const ImportDialog: React.FC<ImportDialogProps> = ({ open, onClose, onImport, em
                       <TableCell align="center">諮詢電話</TableCell>
                       <TableCell align="center">上午支援</TableCell>
                       <TableCell align="center">下午支援</TableCell>
-                      <TableCell align="center">處方審核</TableCell>
+                      <TableCell align="center">處方審核(主)</TableCell>
+                      <TableCell align="center">處方審核(輔)</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -217,7 +219,8 @@ const ImportDialog: React.FC<ImportDialogProps> = ({ open, onClose, onImport, em
               <TableCell align="center">{row.stats.phone}</TableCell>
               <TableCell align="center">{row.stats.morning}</TableCell>
               <TableCell align="center">{row.stats.afternoon}</TableCell>
-              <TableCell align="center">{row.stats.verify}</TableCell>
+              <TableCell align="center">{row.stats.verify1}</TableCell>
+              <TableCell align="center">{row.stats.verify2}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -241,14 +244,15 @@ const ImportDialog: React.FC<ImportDialogProps> = ({ open, onClose, onImport, em
   );
 };
 
-const shifts: Shift[] = ['noon', 'phone', 'morning', 'afternoon', 'verify'];
+const shifts: Shift[] = ['noon', 'phone', 'morning', 'afternoon', 'verify1', 'verify2'];
 
 const shiftDisplayNames: Record<Shift, string> = {
   noon: '諮詢台值午',
   phone: '諮詢電話',
   morning: '上午支援',
   afternoon: '下午支援',
-  verify: '處方審核',
+  verify1: '處方審核(主)',
+  verify2: '處方審核(輔)',
 };
 
 const shiftColors: Record<Shift, string> = {
@@ -256,7 +260,8 @@ const shiftColors: Record<Shift, string> = {
   phone: '#4ECDC4',
   morning: '#45B7D1',
   afternoon: '#96CEB4',
-  verify: '#FFA726',
+  verify1: '#FFA726',
+  verify2: '#26A69A',
 };
 
 interface EditStatsDialogProps {
@@ -272,7 +277,8 @@ const EditStatsDialog: React.FC<EditStatsDialogProps> = ({ open, onClose, employ
     phone: 0,
     morning: 0,
     afternoon: 0,
-    verify: 0,
+    verify1: 0,
+    verify2: 0,
   });
 
   useEffect(() => {
@@ -282,7 +288,8 @@ const EditStatsDialog: React.FC<EditStatsDialogProps> = ({ open, onClose, employ
         phone: employee.historicalStats.phone || 0,
         morning: employee.historicalStats.morning || 0,
         afternoon: employee.historicalStats.afternoon || 0,
-        verify: employee.historicalStats.verify || 0,
+        verify1: employee.historicalStats.verify1 || 0,
+        verify2: employee.historicalStats.verify2 || 0,
       });
     }
   }, [employee]);
@@ -407,7 +414,8 @@ const StatsManagementPage: React.FC = () => {
           phone: 0,
           morning: 0,
           afternoon: 0,
-          verify: 0,
+          verify1: 0,
+          verify2: 0,
           lastUpdated: new Date(),
         }
       }));
@@ -432,7 +440,8 @@ const StatsManagementPage: React.FC = () => {
       諮詢電話: employee.historicalStats?.phone || 0,
       上午支援: employee.historicalStats?.morning || 0,
       下午支援: employee.historicalStats?.afternoon || 0,
-      處方審核: employee.historicalStats?.verify || 0,
+      '處方審核(主)': employee.historicalStats?.verify1 || 0,
+      '處方審核(輔)': employee.historicalStats?.verify2 || 0,
       最後更新: formatDate(employee.historicalStats?.lastUpdated, { includeTime: true }),
     }));
     
@@ -479,15 +488,16 @@ const StatsManagementPage: React.FC = () => {
 
   const getTotalStats = () => {
     return employees.reduce((total, employee) => {
-      const stats = employee.historicalStats || { noon: 0, phone: 0, morning: 0, afternoon: 0, verify: 0 };
+      const stats = employee.historicalStats || { noon: 0, phone: 0, morning: 0, afternoon: 0, verify1: 0, verify2: 0 };
       return {
         noon: total.noon + (stats.noon || 0),
         phone: total.phone + (stats.phone || 0),
         morning: total.morning + (stats.morning || 0),
         afternoon: total.afternoon + (stats.afternoon || 0),
-        verify: total.verify + (stats.verify || 0),
+        verify1: total.verify1 + (stats.verify1 || 0),
+        verify2: total.verify2 + (stats.verify2 || 0),
       };
-    }, { noon: 0, phone: 0, morning: 0, afternoon: 0, verify: 0 });
+    }, { noon: 0, phone: 0, morning: 0, afternoon: 0, verify1: 0, verify2: 0 });
   };
 
   const totalStats = getTotalStats();

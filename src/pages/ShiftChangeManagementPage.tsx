@@ -33,7 +33,8 @@ const getShiftDisplayName = (shift: string) => {
     noon: '諮詢台值午',
     afternoon: '下午支援',
     phone: '諮詢電話',
-    verify: '處方審核',
+    verify1: '處方審核(主)',
+    verify2: '處方審核(輔)',
   };
   return names[shift] || shift;
 };
