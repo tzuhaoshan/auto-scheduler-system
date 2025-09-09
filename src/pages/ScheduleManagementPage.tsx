@@ -445,31 +445,44 @@ const ScheduleManagementPage = () => {
                   
                   {SHIFT_ORDER.map((shift) => {
                     const assignment = schedule.shifts[shift as keyof typeof schedule.shifts];
-                    return assignment && (
+                    const isVacant = !assignment;
+                    
+                    return (
                       <Box key={shift} sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <Chip 
                             label={getShiftDisplayName(shift)}
                             size="small"
                             sx={{ 
-                              backgroundColor: getShiftColor(shift),
+                              backgroundColor: isVacant ? '#f44336' : getShiftColor(shift),
                               color: 'white',
                               fontWeight: 'bold'
                             }}
                           />
-                          <Typography variant="body2">
-                            {getEmployeeName(assignment.employeeId)}
+                          <Typography variant="body2" color={isVacant ? 'error' : 'inherit'}>
+                            {isVacant ? '從缺' : getEmployeeName(assignment.employeeId)}
                           </Typography>
                         </Box>
                         {/* 編輯和換班按鈕 - 僅管理員和經理可見 */}
                         {(userProfile?.role === 'admin' || userProfile?.role === 'manager') && (
                           <>
-                            <IconButton size="small" onClick={() => handleOpenEditDialog(schedule, shift as Shift)}>
+                            <IconButton 
+                              size="small" 
+                              onClick={() => handleOpenEditDialog(schedule, shift as Shift)}
+                              color={isVacant ? "primary" : "default"}
+                              title={isVacant ? "指定人員" : "編輯班次"}
+                            >
                               <EditIcon fontSize="inherit" />
                             </IconButton>
-                            <IconButton size="small" onClick={() => handleOpenShiftChangeDialog(schedule, shift as Shift)}>
-                              <SwapHorizIcon fontSize="inherit" />
-                            </IconButton>
+                            {!isVacant && (
+                              <IconButton 
+                                size="small" 
+                                onClick={() => handleOpenShiftChangeDialog(schedule, shift as Shift)}
+                                title="申請換班"
+                              >
+                                <SwapHorizIcon fontSize="inherit" />
+                              </IconButton>
+                            )}
                           </>
                         )}
                       </Box>

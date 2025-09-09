@@ -42,6 +42,11 @@ const ScheduleEditDialog = ({ open, onClose, onSave, schedule, shiftToEdit, allE
           potentialCandidates = allEmployees.filter(e => e.roles[shiftToEdit] && e.isActive);
         }
         
+        // 如果沒有候選人（例如從缺班別），顯示所有有該班別角色的員工
+        if (potentialCandidates.length === 0) {
+          potentialCandidates = allEmployees.filter(e => e.roles[shiftToEdit] && e.isActive);
+        }
+        
         // 確保目前的員工也在候選清單中（即使他不符合某些新規則，也應該能被選中）
         if (currentEmployee && !potentialCandidates.some(c => c.id === currentEmployee.id)) {
           potentialCandidates.unshift(currentEmployee);
@@ -67,16 +72,29 @@ const ScheduleEditDialog = ({ open, onClose, onSave, schedule, shiftToEdit, allE
   };
   
   const shiftNames: Record<string, string> = {
-    'noon': '諮詢台值午', 'phone': '諮詢電話', 'morning': '上午支援', 'afternoon': '下午支援'
+    'noon': '諮詢台值午', 
+    'phone': '諮詢電話', 
+    'morning': '上午支援', 
+    'afternoon': '下午支援',
+    'verify1': '處方審核(主)',
+    'verify2': '處方審核(輔)'
   };
+
+  const isVacant = !currentAssignment;
+  const dialogTitle = isVacant ? '指定人員' : '編輯班次';
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
       <DialogTitle>
-        編輯班次 - {schedule ? new Date(schedule.date).toLocaleDateString() : ''}
+        {dialogTitle} - {schedule ? new Date(schedule.date).toLocaleDateString() : ''}
         <Typography variant="body1" color="text.secondary">
           {shiftToEdit ? shiftNames[shiftToEdit] : ''}
         </Typography>
+        {isVacant && (
+          <Typography variant="body2" color="error">
+            此班別目前從缺，請選擇人員
+          </Typography>
+        )}
       </DialogTitle>
       <DialogContent>
         {isLoading ? (
@@ -107,7 +125,7 @@ const ScheduleEditDialog = ({ open, onClose, onSave, schedule, shiftToEdit, allE
       <DialogActions>
         <Button onClick={onClose}>取消</Button>
         <Button onClick={handleSave} variant="contained" disabled={!selectedEmployeeId || selectedEmployeeId === currentAssignment?.employeeId}>
-          儲存變更
+          {isVacant ? '指定人員' : '儲存變更'}
         </Button>
       </DialogActions>
     </Dialog>
