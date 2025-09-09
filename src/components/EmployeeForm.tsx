@@ -67,10 +67,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, employee, on
           }
         });
         
+        // 確保所有角色都有預設值，包括新增的 verify1 和 verify2
+        const defaultRoles = {
+          noon: false,
+          phone: false,
+          morning: false,
+          afternoon: false,
+          verify1: false,
+          verify2: false,
+        };
+        const rolesWithDefaults = {
+          ...defaultRoles,
+          ...employee.roles, // 覆蓋現有的角色設定
+        };
+        
         reset({
           name: employee.name,
           employeeId: employee.employeeId,
-          roles: employee.roles,
+          roles: rolesWithDefaults,
           constraints: constraints,
           isActive: employee.isActive,
         });
@@ -111,7 +125,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ open, onClose, employee, on
         }
       }
     }
-    onSave({ ...data, constraints: finalConstraints });
+    
+    const finalData = { ...data, constraints: finalConstraints };
+    onSave(finalData);
     onClose();
   };
   

@@ -39,6 +39,9 @@ const EmployeeManagementPage = () => {
 
   const handleSaveEmployee = async (data: EmployeeFormData) => {
     try {
+      console.log('員工管理頁面收到的資料:', data);
+      console.log('角色設定:', data.roles);
+      
       if (selectedEmployee) {
         // 更新員工
         const updatedData = {
@@ -48,6 +51,7 @@ const EmployeeManagementPage = () => {
           constraints: data.constraints, // 確保 constraints 被儲存
           isActive: data.isActive,
         };
+        console.log('更新員工資料:', updatedData);
         await employeeService.updateEmployee(selectedEmployee.id, updatedData);
       } else {
         // 新增員工
@@ -58,10 +62,12 @@ const EmployeeManagementPage = () => {
           constraints: data.constraints, // 確保 constraints 被儲存
           isActive: data.isActive,
         };
+        console.log('新增員工資料:', newEmployee);
         await employeeService.addEmployee(newEmployee);
       }
       // 重新載入列表
       const updatedEmployees = await employeeService.getEmployees();
+      console.log('更新後的員工列表:', updatedEmployees);
       setEmployees(updatedEmployees);
     } catch (error) {
       console.error('儲存員工失敗:', error);
