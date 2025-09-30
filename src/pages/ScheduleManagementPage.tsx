@@ -463,9 +463,10 @@ const ScheduleManagementPage = () => {
                             {isVacant ? '從缺' : getEmployeeName(assignment.employeeId)}
                           </Typography>
                         </Box>
-                        {/* 編輯和換班按鈕 - 僅管理員和經理可見 */}
-                        {(userProfile?.role === 'admin' || userProfile?.role === 'manager') && (
-                          <>
+                        {/* 按鈕區域 */}
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                          {/* 管理者/管理員的編輯按鈕 */}
+                          {(userProfile?.role === 'admin' || userProfile?.role === 'manager') && (
                             <IconButton 
                               size="small" 
                               onClick={() => handleOpenEditDialog(schedule, shift as Shift)}
@@ -474,17 +475,21 @@ const ScheduleManagementPage = () => {
                             >
                               <EditIcon fontSize="inherit" />
                             </IconButton>
-                            {!isVacant && (
-                              <IconButton 
-                                size="small" 
-                                onClick={() => handleOpenShiftChangeDialog(schedule, shift as Shift)}
-                                title="申請換班"
-                              >
-                                <SwapHorizIcon fontSize="inherit" />
-                              </IconButton>
-                            )}
-                          </>
-                        )}
+                          )}
+                          
+                          {/* 員工申請換班/代班按鈕 */}
+                          {!isVacant && userProfile?.role === 'employee' && 
+                           assignment?.employeeId === userProfile.employeeId && (
+                            <IconButton 
+                              size="small" 
+                              onClick={() => handleOpenShiftChangeDialog(schedule, shift as Shift)}
+                              title="申請換班/代班"
+                              color="primary"
+                            >
+                              <SwapHorizIcon fontSize="inherit" />
+                            </IconButton>
+                          )}
+                        </Box>
                       </Box>
                     );
                   })}

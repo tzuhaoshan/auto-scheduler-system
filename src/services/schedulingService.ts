@@ -1,4 +1,4 @@
-import { format, isWithinInterval, startOfDay, isWeekend, differenceInDays, subDays } from 'date-fns';
+import { format, isWithinInterval, startOfDay, isWeekend, differenceInDays, subDays, startOfWeek, endOfWeek } from 'date-fns';
 import type { Employee } from '../models/employee';
 import type { Holiday } from '../models/holiday';
 import type { DailySchedule, ShiftAssignment } from '../models/schedule';
@@ -144,7 +144,20 @@ const checkPersonalConstraints = (employee: Employee, shift: Shift, date: Date, 
     return false;
   }
 
-  // 可以在此處加入 maxWeeklyShifts 的檢查，但這會更複雜，需要知道是當週的第幾天，暫時簡化
+  // 檢查每週最大班次數
+  const weekStart = startOfWeek(date, { weekStartsOn: 1 }); // 週一開始
+  const weekEnd = endOfWeek(date, { weekStartsOn: 1 }); // 週日結束
+  
+  const weeklyShifts = schedulesToCheck
+    .filter(schedule => {
+      const scheduleDate = new Date(schedule.date);
+      return scheduleDate >= weekStart && scheduleDate <= weekEnd;
+    })
+    .filter(schedule => schedule.shifts[shift]?.employeeId === employee.id);
+  
+  if (weeklyShifts.length >= shiftConstraints.maxWeeklyShifts) {
+    return false;
+  }
   
   return true;
 };
@@ -171,7 +184,7 @@ const countConsecutiveDays = (employeeId: string, shift: Shift, date: Date, sche
       break;
     }
   }
-  return consecutiveCount + 1; // +1 for the current day being checked
+  return consecutiveCount; // 返回已經連續的天數，不包含當天
 };
 
 
