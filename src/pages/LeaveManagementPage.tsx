@@ -16,6 +16,10 @@ import {
   Chip,
   Menu,
   MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  Grid,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -39,6 +43,7 @@ const LeaveManagementPage = () => {
   const [selectedLeave, setSelectedLeave] = useState<Leave | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuTargetId, setMenuTargetId] = useState<string | null>(null);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('all');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -169,6 +174,15 @@ const LeaveManagementPage = () => {
     return typeMap[type as keyof typeof typeMap] || '未知';
   };
 
+  // 篩選請假記錄
+  const filteredLeaves = selectedEmployeeId === 'all' 
+    ? leaves 
+    : leaves.filter(leave => leave.employeeId === selectedEmployeeId);
+
+  const handleEmployeeFilterChange = (employeeId: string) => {
+    setSelectedEmployeeId(employeeId);
+  };
+
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
@@ -179,6 +193,38 @@ const LeaveManagementPage = () => {
           新增請假
         </Button>
       </Box>
+
+      {/* 員工篩選器 */}
+      <Paper sx={{ p: 3, mb: 3 }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6} md={4}>
+            <FormControl fullWidth>
+              <InputLabel id="employee-filter-label">篩選員工</InputLabel>
+              <Select
+                labelId="employee-filter-label"
+                value={selectedEmployeeId}
+                label="篩選員工"
+                onChange={(e) => handleEmployeeFilterChange(e.target.value)}
+              >
+                <MenuItem value="all">全部員工</MenuItem>
+                {employees.map((employee) => (
+                  <MenuItem key={employee.id} value={employee.id}>
+                    {employee.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6} md={8}>
+            <Typography variant="body2" color="text.secondary">
+              {selectedEmployeeId === 'all' 
+                ? `顯示全部 ${leaves.length} 筆請假記錄`
+                : `顯示 ${employees.find(emp => emp.id === selectedEmployeeId)?.name || '未知員工'} 的 ${filteredLeaves.length} 筆請假記錄`
+              }
+            </Typography>
+          </Grid>
+        </Grid>
+      </Paper>
 
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
@@ -198,7 +244,7 @@ const LeaveManagementPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {leaves.map((leave) => (
+              {filteredLeaves.map((leave) => (
                 <TableRow key={leave.id}>
                   <TableCell>{leave.employeeName}</TableCell>
                   <TableCell>{getLeaveTypeDisplay(leave.leaveType)}</TableCell>
